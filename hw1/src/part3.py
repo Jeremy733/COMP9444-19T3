@@ -43,8 +43,19 @@ class FeedForward(nn.Module):
     TODO: Implement the following network structure
     Linear (256) -> ReLU -> Linear(64) -> ReLU -> Linear(10) -> ReLU-> LogSoftmax
     """
-
-
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(784, 256)
+        self.fc2 = nn.Linear(256, 64)
+        self.fc3 = nn.Linear(64, 10)
+    def forward(self, x):
+        x = x.view(x.shape[0], -1)
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = F.relu(self.fc3(x))
+        x = F.log_softmax(x, dim=1)
+        
+        return x
 class CNN(nn.Module):
     """
     TODO: Implement CNN Network structure
@@ -57,6 +68,23 @@ class CNN(nn.Module):
     Hint: You will need to reshape outputs from the last conv layer prior to feeding them into
     the linear layers.
     """
+    def __init__(self):
+        super().__init__()
+        self.conv1 = nn.Conv2d(1, 10, kernel_size = 5, stride = 1)
+        self.conv2 = nn.Conv2d(10, 50, kernel_size = 5, stride = 1)
+        self.pool = nn.MaxPool2d(kernel_size = 2)
+        self.fc1 = nn.Linear(800, 256)
+        self.fc2 = nn.Linear(256, 10)
+    def forward(self, x):
+        x = self.pool(F.relu(self.conv1(x)))
+        x = self.pool(F.relu(self.conv2(x)))
+        x = x.view(-1, 800)
+        x = F.relu(self.fc1(x))
+        x = self.fc2(x)
+        x = F.log_softmax(x, dim=1)
+        return x
+    
+
 
 class NNModel:
     def __init__(self, network, learning_rate):
@@ -104,6 +132,19 @@ class NNModel:
 
            2) An int 8x8 numpy array of labels corresponding to this tiling
         """
+        iterator = iter(self.trainloader)
+        images, labels = iterator.next()
+        image_grid = torch.empty(0)
+        
+        for i in range(8):
+            img_row = images.numpy()[i*8:(i+1)*8][:][:][:].reshape(8, 28, 28)
+            imgs = torch.from_numpy(img_row)
+            row = imgs[0]
+            for j in range(1, 8):
+                row = torch.cat((row, imgs[j]), dim=1)
+            image_grid = torch.cat((image_grid, row))
+        
+        return image_grid, labels
 
     def train_step(self):
         """
