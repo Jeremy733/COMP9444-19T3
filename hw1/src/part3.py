@@ -129,22 +129,23 @@ class NNModel:
         Return:
            1) A float32 numpy array (of dim [28*8, 28*8]), containing a tiling of the batch images,
            place the first 8 images on the first row, the second 8 on the second row, and so on
-
            2) An int 8x8 numpy array of labels corresponding to this tiling
         """
         iterator = iter(self.trainloader)
         images, labels = iterator.next()
-        image_grid = torch.empty(0)
+        batch = torch.empty(0)
         
-        for i in range(8):
-            img_row = images.numpy()[i*8:(i+1)*8][:][:][:].reshape(8, 28, 28)
-            imgs = torch.from_numpy(img_row)
-            row = imgs[0]
-            for j in range(1, 8):
-                row = torch.cat((row, imgs[j]), dim=1)
-            image_grid = torch.cat((image_grid, row))
+        for i in range(0,8):
+            img = images.numpy()[i*8:(i+1)*8]
+            img = img.reshape(8,28,28)
+            imgnp = torch.from_numpy(img)
+            row = imgnp[0]
+            for j in range(1,8):
+                row = torch.cat((row, imgnp[j]),dim=1)
+            
+            batch = torch.cat((batch, row),dim=0)
         
-        return image_grid, labels
+        return batch, labels.view(8, 8)
 
     def train_step(self):
         """

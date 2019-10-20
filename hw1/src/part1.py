@@ -91,5 +91,5 @@ def simple_stack(tensors, dim):
     TODO: Implement a function that concatenates the given sequence of tensors
         along a new dimension(dim) and returns the result.
     """
-    return torch.cat(tensors, dim=dim)
+    return torch.stack(tensors, dim=dim)
 
