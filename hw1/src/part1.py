@@ -35,7 +35,7 @@ def simple_flat(x):
     """
     TODO: Implement a function that flattens the given tensor and returns the result.
     """
-    return x.flatten(x)
+    return x.reshape(-1)
 
 # Transpose and Permutation
 
