@@ -138,7 +138,7 @@ class NNModel:
 		image = torch.empty(0)
 		x = 0
 		y = 0
-		k = 0
+		i = 0
 		for images, label in self.trainloader:
 			for x in images:
 				if y < 8:
@@ -149,8 +149,8 @@ class NNModel:
 					image = torch.cat([image,row],0)
 					row = torch.empty(0)
 					y = 0
-					k += 1
-				if k == 8:
+					i += 1
+				if i == 8:
 					break
 					
 			break

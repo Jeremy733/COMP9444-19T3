@@ -46,6 +46,7 @@ class LinearModel:
             sigfunc = 1.0 / (1.0 + np.exp(-x))
         except ValueError:
             print("Value Error")
+            raise
         return sigfunc 
 
     def forward(self, inputs):
